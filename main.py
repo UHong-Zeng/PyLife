@@ -2,16 +2,32 @@ from PyQt5 import QtWidgets,QtCore
 import MainUI
 import sys
 
-from Canvas.FirstCanva_Window import MainWindow as FirstMainWindow
+from Canvas.GPTLifeWindow import MainWindow as lifegame
 class MainWindow(QtWidgets.QMainWindow,MainUI.Ui_MainWindow):
     def __init__(self):
+        self.isStart = False
+
         super(MainWindow, self).__init__()
         self.setupUi(self)
-        self.pushButton.clicked.connect(self.OpenFirstCanva)
+        self.pushButton.clicked.connect(self.CloseWindow)
+        self.OpenCanva()
+        self.pushButton_2.clicked.connect(self.ChangeSimulationState)
 
-    def OpenFirstCanva(self):
-        self.FirstCanva = FirstMainWindow()
-        self.FirstCanva.show()
+    def ChangeSimulationState(self):
+        self.game.isStart = not self.game.isStart
+        state = self.game.isStart
+        print("SimulationState: " + str(state))
+        if state:
+            self.pushButton_2.setText("Stop simulation")
+        else:
+            self.pushButton_2.setText("Start simulation")
+    def OpenCanva(self):
+        self.game =lifegame()
+        self.game.show()
+
+    def CloseWindow(self):
+        self.game.close()
+        self.close()
 
 
 if __name__ == '__main__':
