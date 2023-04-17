@@ -12,7 +12,10 @@ class MainWindow(QtWidgets.QMainWindow,MainUI.Ui_MainWindow):
         self.pushButton.clicked.connect(self.CloseWindow)
         self.OpenCanva()
         self.pushButton_2.clicked.connect(self.ChangeSimulationState)
+        self.pushButton_3.clicked.connect(self.ClearCanva)
 
+    def ClearCanva(self):
+        self.game.clearCanva()
     def ChangeSimulationState(self):
         self.game.isStart = not self.game.isStart
         state = self.game.isStart

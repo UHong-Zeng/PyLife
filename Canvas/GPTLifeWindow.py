@@ -37,7 +37,8 @@ class MainWindow(QMainWindow):
         self.isStart = False
 
         # 创建一个大小为50x50的游戏
-        self.game = LifeGame((50, 50))
+        self.x, self.y = 50, 50
+        self.game = LifeGame((self.x, self.y))
 
         # 创建图像窗口和初始化图像
         self.figure = Figure(figsize=(5, 5), dpi=100)
@@ -66,12 +67,35 @@ class MainWindow(QMainWindow):
         self.timer.timeout.connect(self.update_game)
         self.timer.start(100)
 
+        # 綁定用戶點擊事件
+        self.cid = self.figure.canvas.mpl_connect('button_press_event', self.onclick)
+
+    # 設置用戶點擊事件的處理函數
+    def onclick(self,event):
+        x, y = event.xdata // 1, event.ydata // 1
+        y, x = int(x), int(y)
+        x = self.fix_number(x)
+        y = self.fix_number(y)
+        print(x,y)
+        self.game.grid[x][y] = 1
+        self.img.set_data(self.game.grid)
+        self.canvas.draw()
+    def fix_number(self,n):
+        if n - (n//1) >= 0.5:
+            return n//1 + 1
+        else:
+            return n//1
     def update_game(self):
         if self.isStart:
             # 计算下一个状态并渲染图像
             self.game.evolve()
             self.img.set_data(self.game.grid)
             self.canvas.draw()
+
+    def clearCanva(self):
+        self.game.grid = np.zeros((self.x,self.y))
+        self.img.set_data(self.game.grid)
+        self.canvas.draw()
 
 
 if __name__ == '__main__':
