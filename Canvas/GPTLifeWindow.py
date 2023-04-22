@@ -1,4 +1,5 @@
 import sys
+import sqlite3
 
 from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout
@@ -12,7 +13,21 @@ class LifeGame:
     def __init__(self, size):
         # 初始化游戏状态为随机的0和1
         self.grid = np.random.choice([0, 1], size=size)
+        # self.grid = np.zeros(shape=size)
         self.rows, self.cols = size
+        self.setLive()
+
+
+    def setLive(self):
+        conn = sqlite3.connect("../Pattern/Health.db")
+        cur = conn.cursor()
+        cur.execute("delete from pattern0")
+        for row in range(self.rows):
+            for col in range(self.cols):
+                cur.execute("insert or replace into pattern0(row,col,islive) values ({},{},{})".format(row,col,self.grid[row][col]))
+        conn.commit()
+        conn.close()
+
 
     # 定义规则函数，计算下一个状态
     def evolve(self):
@@ -37,7 +52,7 @@ class MainWindow(QMainWindow):
         self.isStart = False
 
         # 创建一个大小为50x50的游戏
-        self.x, self.y = 50, 50
+        self.x, self.y = 100, 100
         self.game = LifeGame((self.x, self.y))
 
         # 创建图像窗口和初始化图像
