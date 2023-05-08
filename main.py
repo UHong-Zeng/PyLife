@@ -14,6 +14,11 @@ class MainWindow(QtWidgets.QMainWindow,MainUI.Ui_MainWindow):
         self.pushButton_2.clicked.connect(self.ChangeSimulationState)
         self.pushButton_3.clicked.connect(self.ClearCanva)
 
+        self.pushButton_4.clicked.connect(self.SaveData)
+
+    def SaveData(self):
+        self.game.getLifeState(self.lineEdit.text())
+
     def ClearCanva(self):
         self.game.clearCanva()
     def ChangeSimulationState(self):

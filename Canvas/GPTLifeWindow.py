@@ -15,18 +15,8 @@ class LifeGame:
         self.grid = np.random.choice([0, 1], size=size)
         # self.grid = np.zeros(shape=size)
         self.rows, self.cols = size
-        self.setLive()
 
 
-    def setLive(self):
-        conn = sqlite3.connect("../Pattern/Health.db")
-        cur = conn.cursor()
-        cur.execute("delete from pattern0")
-        for row in range(self.rows):
-            for col in range(self.cols):
-                cur.execute("insert or replace into pattern0(row,col,islive) values ({},{},{})".format(row,col,self.grid[row][col]))
-        conn.commit()
-        conn.close()
 
 
     # 定义规则函数，计算下一个状态
@@ -52,7 +42,7 @@ class MainWindow(QMainWindow):
         self.isStart = False
 
         # 创建一个大小为50x50的游戏
-        self.x, self.y = 100, 100
+        self.x, self.y = 50,50
         self.game = LifeGame((self.x, self.y))
 
         # 创建图像窗口和初始化图像
@@ -85,6 +75,8 @@ class MainWindow(QMainWindow):
         # 綁定用戶點擊事件
         self.cid = self.figure.canvas.mpl_connect('button_press_event', self.onclick)
 
+        self.getLifeState()
+
     # 設置用戶點擊事件的處理函數
     def onclick(self,event):
         x, y = event.xdata // 1, event.ydata // 1
@@ -111,6 +103,18 @@ class MainWindow(QMainWindow):
         self.game.grid = np.zeros((self.x,self.y))
         self.img.set_data(self.game.grid)
         self.canvas.draw()
+
+    def getLifeState(self,table_name="table01"):
+
+        conn = sqlite3.connect("pattern0.db")
+        cur = conn.cursor()
+        # cur.execute("CREATE TABLE {} (row INTERGER, col INTERGER, isLive INTERGER)".format(table_name))
+        cur.execute("delete from {}".format(table_name))
+        for row in range(self.x):
+            for col in range(self.y):
+                cur.execute("insert or replace into {}(row,col,isLive) values ({},{},{})".format(table_name,row,col,self.game.grid[row][col]))
+        conn.commit()
+        conn.close()
 
 
 if __name__ == '__main__':
