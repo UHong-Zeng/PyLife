@@ -12,23 +12,19 @@ class MainWindow(QtWidgets.QMainWindow,MainUI.Ui_MainWindow):
         self.pushButton.clicked.connect(self.CloseWindow)
         self.OpenCanva()
         self.pushButton_2.clicked.connect(self.ChangeSimulationState)
-        self.pushButton_3.clicked.connect(self.ClearCanva)
-
+        self.pushButton_3.clicked.connect(self.game.clearCanva)
         self.pushButton_4.clicked.connect(self.SaveData)
-
     def SaveData(self):
-        self.game.getLifeState(self.lineEdit.text())
-
-    def ClearCanva(self):
-        self.game.clearCanva()
+        file_name = self.lineEdit.text()
+        print(file_name)
     def ChangeSimulationState(self):
         self.game.isStart = not self.game.isStart
         state = self.game.isStart
         print("SimulationState: " + str(state))
         if state:
-            self.pushButton_2.setText("Stop simulation")
+            self.pushButton_2.setText("停止模擬")
         else:
-            self.pushButton_2.setText("Start simulation")
+            self.pushButton_2.setText("開始模擬")
     def OpenCanva(self):
         self.game =lifegame()
         self.game.show()
